@@ -1,6 +1,6 @@
 import UpperNavbar from '@/components/UpperNavbar';
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function HomeScreen() {
@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
     padding: 10, 
     marginTop: 50, 
     height: desiredHeight, 
+    backgroundColor: 'white'
   } 
 });
 
