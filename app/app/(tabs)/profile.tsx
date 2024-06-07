@@ -67,6 +67,7 @@ const Profile = () => {
       setIsReady(true);
     } catch (error) {
       router.replace('/auth/login');
+      console.log(error);
     }
   };
 
@@ -90,7 +91,7 @@ const Profile = () => {
   const HandlePasswordChange = async () => {
     setIsPasswordLoading(true);
 
-    if (passwordFields.newPassword == "" || passwordFields.currentPassword == "") {
+    if (passwordFields.newPassword === "" || passwordFields.currentPassword === "") {
       setPasswordError("Todos os campos sao necesarios");
       setIsPasswordLoading(false);
     } else {
@@ -225,7 +226,7 @@ const Profile = () => {
                 <Text style={styles.titleInterger}>Informacoes & Dados pessoais</Text>
               </View>
 
-              {personalInformationError != "" ? <Text style={styles.AlertComponent}>
+              {personalInformationError !== "" ? <Text style={styles.AlertComponent}>
                 {personalInformationError}
               </Text> : ""}
 
@@ -278,7 +279,7 @@ const Profile = () => {
                 <Text style={styles.titleInterger}>Alterar Password</Text>
               </View>
 
-              {passwordError != "" ? <Text style={styles.AlertComponent}>
+              {passwordError !== "" ? <Text style={styles.AlertComponent}>
                 {passwordError}
               </Text> : ""}
 

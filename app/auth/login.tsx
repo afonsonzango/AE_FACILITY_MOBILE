@@ -123,7 +123,7 @@ const Login = () => {
             {isLoading ? <ActivityIndicator size={20} color={"#fff"} style={{ marginTop: 8 }} /> : <Text>Entrar</Text>}
           </Button>
 
-          <hr style={{ marginTop: 20, width: 100 }} />
+          {/* <hr style={{ marginTop: 20, width: 100 }} /> */}
 
           <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: 15}}>
             <Text onPress={() => router.push('/auth/register')}>Criar nova conta</Text>
