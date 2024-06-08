@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { StatusBar } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -24,6 +26,9 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+
+  StatusBar.setBarStyle('light-content'); 
+  StatusBar.setBackgroundColor(Colors.dark1);
 
   return (
     <ThemeProvider value={DefaultTheme}>

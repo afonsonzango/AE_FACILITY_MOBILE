@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
   return (
@@ -14,7 +15,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={Colors.dark1} />
           ),
         }}
       />
@@ -23,7 +24,7 @@ export default function TabLayout() {
         options={{
           title: 'Procurar',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'search' : 'search-outline'} color={color} />
+            <TabBarIcon name={focused ? 'search' : 'search-outline'} color={Colors.dark1} />
           ),
         }}
       />
@@ -32,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: 'Lista de desejos',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'heart' : 'heart-outline'} color={color} />
+            <TabBarIcon name={focused ? 'heart' : 'heart-outline'} color={Colors.dark1} />
           ),
         }}
       />
@@ -41,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: 'Meu Perfil',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
+            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={Colors.dark1} />
           ),
         }}
       />
@@ -50,7 +51,7 @@ export default function TabLayout() {
         options={{
           title: 'Armazem',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'bag' : 'bag-outline'} color={color} />
+            <TabBarIcon name={focused ? 'bag' : 'bag-outline'} color={Colors.dark1} />
           ),
         }}
       />

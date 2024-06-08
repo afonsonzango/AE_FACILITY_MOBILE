@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@/services/axiosConfig";
 import { router, useFocusEffect } from "expo-router";
 import React, { useState } from "react";
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { Colors } from "@/constants/Colors";
 import { styles as container } from "./home";
@@ -167,7 +168,7 @@ const Profile = () => {
     }
 
     // Launch image picker
-    const result: any = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
@@ -175,8 +176,29 @@ const Profile = () => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const selectedImageUri = result.assets[0].uri;
+
+      // Compress the image
+      const manipResult:any = await ImageManipulator.manipulateAsync(
+        selectedImageUri,
+        [],
+        { compress: 0.1, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      // Check file size and adjust compression if necessary
+      const fileSize = await getFileSize(manipResult.uri);
+      if (fileSize > 40 * 1024) { // 40 KB
+        Alert.alert('Compression failed', 'Image is larger than 40 KB even after compression');
+      } else {
+        setImage(manipResult.uri);
+      }
     }
+  };
+
+  const getFileSize = async (uri:any) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return blob.size;
   };
 
   const uploadImage = async () => {
@@ -197,14 +219,16 @@ const Profile = () => {
     });
 
     try {
-      const response = await axios.put(`${API_URL}/user/update/picture`, formData, {
+      await axios.put(`${API_URL}/user/update/picture`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      Alert.alert('Success', 'Image uploaded successfully');
 
+      Alert.alert('Success', 'Image uploaded successfully');
       setImage(null);
+
+      router.replace("/app/profile");
     } catch (error) {
       console.log(error);
       Alert.alert('Error', 'Image upload failed');
@@ -220,7 +244,6 @@ const Profile = () => {
             <View style={styles.paddingProfile}>
               <View style={styles.centerImage}>
                 <View style={styles.imageCopper}>
-
                   {image ? (
                     <TouchableOpacity onPress={pickImage}>
                       <View style={styles.hideBorderView}>
@@ -234,8 +257,6 @@ const Profile = () => {
                       </View>
                     </TouchableOpacity>
                   )}
-
-                  {/* <TouchableOpacity style={styles.btnChange} onPress={pickImage}></TouchableOpacity> */}
                 </View>
               </View>
 
@@ -243,7 +264,6 @@ const Profile = () => {
                 {image && <Button onPress={uploadImage}>Upload Image</Button>}
               </View>
 
-              <Text>{profileImage}</Text>
               <View>
                 <View style={{ marginTop: 20, marginBottom: 18 }}>
                   <Text style={styles.titleInterger}>Informacoes & Dados pessoais</Text>
