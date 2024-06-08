@@ -1,6 +1,6 @@
 import axios from "axios"
 import UpperNavbar from "@/components/UpperNavbar"
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,7 +24,6 @@ interface PasswordFieldsInterface {
   newPassword: string
 }
 
-
 const Profile = () => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -34,6 +33,7 @@ const Profile = () => {
     name: null, email: null, phone_number: null
   });
 
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isPasswordLoading, setIsPasswordLoading] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string>("");
   const [passwordFields, setPasswordFields] = useState<PasswordFieldsInterface>({
@@ -43,7 +43,7 @@ const Profile = () => {
 
   const checkTokenAndNavigate = async () => {
     const userToken = await AsyncStorage.getItem('token');
-    console.log("Token:" + userToken);
+    setIsReady(false);
 
     try {
       const response = await axios.post(
@@ -64,10 +64,11 @@ const Profile = () => {
 
       setProfileImage(response.data.user.image);
 
-      setIsReady(true);
     } catch (error) {
       router.replace('/auth/login');
       console.log(error);
+    } finally {
+      setIsReady(true);
     }
   };
 
@@ -154,55 +155,59 @@ const Profile = () => {
     }
   }
 
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [image, setImage] = useState(null);
 
-  const HandleChangePhoto = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Desculpe, precisamos de permissão para acessar a biblioteca de mídia!');
+  const pickImage = async () => {
+    // Request permission to access media library
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission to access camera roll is required!');
       return;
     }
 
-    const result:any = await ImagePicker.launchImageLibraryAsync({
+    // Launch image picker
+    const result: any = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      const userId = await AsyncStorage.getItem('userId');
-      const userToken = await AsyncStorage.getItem('userToken');
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
-      if (!userId || !userToken) {
-        Alert.alert('Erro', 'Erro ao obter usuário ou token. Por favor, faça login novamente.');
-        return;
-      }
+  const uploadImage = async () => {
+    if (!image) {
+      Alert.alert('No image selected', 'Please select an image first.');
+      return;
+    }
 
-      const formData: any = new FormData();
-      formData.append('userId', userId);
-      formData.append('image', {
-        uri: result.uri,
-        name: 'profile.jpg',
-        type: 'image/jpeg'
+    const userId = await AsyncStorage.getItem('userId');
+    console.log(userId);
+
+    const formData: any = new FormData();
+    formData.append('userId', userId);
+    formData.append('image', {
+      uri: image,
+      type: 'image/jpeg', // or other appropriate MIME type
+      name: 'photo.jpg',
+    });
+
+    try {
+      const response = await axios.put(`${API_URL}/user/update/picture`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
+      Alert.alert('Success', 'Image uploaded successfully');
 
-      try {
-        const response = await axios.post(`${API_URL}/user/update/picture`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            token: userToken
-          }
-        });
-
-        if (response.data.info.error === false) {
-          setProfileImage(result.uri);
-          Alert.alert('Sucesso', 'Foto de perfil atualizada com sucesso');
-        }
-      } catch (error:any) {
-        console.error('Erro ao fazer upload da foto:', error.message);
-        Alert.alert('Erro', 'Erro ao fazer upload da foto');
-      }
+      setImage(null);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', 'Image upload failed');
     }
   };
 
@@ -210,134 +215,161 @@ const Profile = () => {
     <SafeAreaView>
       <UpperNavbar />
       <ScrollView showsHorizontalScrollIndicator={false} style={container.container}>
-        {isReady ? (
-          <View style={styles.paddingProfile}>
-            <View style={styles.centerImage}>
-              <View style={styles.imageCopper}>
-                <View style={styles.hideBorderView}>
-                  <Image source={{ uri: String(`${API_URL}/file/` + profileImage) || imageUrl }} style={styles.profileImage} />
+        <View style={{ padding: 10 }}>
+          {isReady ? (
+            <View style={styles.paddingProfile}>
+              <View style={styles.centerImage}>
+                <View style={styles.imageCopper}>
+
+                  {image ? (
+                    <TouchableOpacity onPress={pickImage}>
+                      <View style={styles.hideBorderView}>
+                        <Image source={{ uri: image }} style={styles.profileImage} />
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={pickImage}>
+                      <View style={styles.hideBorderView}>
+                        <Image source={{ uri: `${API_URL}/file/` + profileImage || imageUrl }} style={styles.profileImage} />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+
+                  {/* <TouchableOpacity style={styles.btnChange} onPress={pickImage}></TouchableOpacity> */}
                 </View>
-                <TouchableOpacity style={styles.btnChange} onPress={HandleChangePhoto}></TouchableOpacity>
-              </View>
-            </View>
-
-            <View>
-              <View style={{ marginTop: 20, marginBottom: 18 }}>
-                <Text style={styles.titleInterger}>Informacoes & Dados pessoais</Text>
               </View>
 
-              {personalInformationError !== "" ? <Text style={styles.AlertComponent}>
-                {personalInformationError}
-              </Text> : ""}
+              <View style={styles.container}>
+                {image && <Button onPress={uploadImage}>Upload Image</Button>}
+              </View>
 
+              <Text>{profileImage}</Text>
               <View>
-                <View style={styles.inputElementCopper}>
-                  <Text style={styles.textInput}>Nome</Text>
-                  <TextInput
-                    placeholder='Nome'
-                    value={String(formData.name)}
-                    onChangeText={(text) => setFormData({ ...formData, name: text })}
-                    style={styles.input}
-                    underlineColor={Colors.primaryDarkest}
-                    disabled={isPersonalInformationLoading}
-                    theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
-                  />
+                <View style={{ marginTop: 20, marginBottom: 18 }}>
+                  <Text style={styles.titleInterger}>Informacoes & Dados pessoais</Text>
                 </View>
-                <View style={styles.inputElementCopper}>
-                  <Text style={styles.textInput}>E-mail</Text>
-                  <TextInput
-                    placeholder='E-mail'
-                    value={String(formData.email)}
-                    onChangeText={(text) => setFormData({ ...formData, email: text })}
-                    style={styles.input}
-                    underlineColor={Colors.primaryDarkest}
-                    disabled={isPersonalInformationLoading}
-                    theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
-                  />
-                </View>
-                <View style={styles.inputElementCopper}>
-                  <Text style={styles.textInput}>Telefone</Text>
-                  <TextInput
-                    placeholder='Telefone'
-                    value={String(formData.phone_number)}
-                    onChangeText={(text) => setFormData({ ...formData, phone_number: text })}
-                    style={styles.input}
-                    underlineColor={Colors.primaryDarkest}
-                    disabled={isPersonalInformationLoading}
-                    theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
-                  />
-                </View>
-              </View>
 
-              <TouchableOpacity disabled={isPersonalInformationLoading ? true : false} style={styles.hithLightButton} onPress={HandlePessoalInformation}>
-                {isPersonalInformationLoading ? <ActivityIndicator size={20} color="#fff" /> : <Text style={styles.buttonTextIng}>Actualizar dados de perfil</Text>}
-              </TouchableOpacity>
-            </View>
+                {personalInformationError !== "" ? <Text style={styles.AlertComponent}>
+                  {personalInformationError}
+                </Text> : ""}
 
-            <View>
-              <View style={{ marginTop: 20, marginBottom: 18 }}>
-                <Text style={styles.titleInterger}>Alterar Password</Text>
-              </View>
+                <View>
+                  <View style={styles.inputElementCopper}>
+                    <Text style={styles.textInput}>Nome</Text>
+                    <TextInput
+                      placeholder='Nome'
+                      value={String(formData.name)}
+                      onChangeText={(text) => setFormData({ ...formData, name: text })}
+                      style={styles.input}
+                      underlineColor={Colors.primaryDarkest}
+                      disabled={isPersonalInformationLoading}
+                      theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
+                    />
+                  </View>
+                  <View style={styles.inputElementCopper}>
+                    <Text style={styles.textInput}>E-mail</Text>
+                    <TextInput
+                      placeholder='E-mail'
+                      value={String(formData.email)}
+                      onChangeText={(text) => setFormData({ ...formData, email: text })}
+                      style={styles.input}
+                      underlineColor={Colors.primaryDarkest}
+                      disabled={isPersonalInformationLoading}
+                      theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
+                    />
+                  </View>
+                  <View style={styles.inputElementCopper}>
+                    <Text style={styles.textInput}>Telefone</Text>
+                    <TextInput
+                      placeholder='Telefone'
+                      value={String(formData.phone_number)}
+                      onChangeText={(text) => setFormData({ ...formData, phone_number: text })}
+                      style={styles.input}
+                      underlineColor={Colors.primaryDarkest}
+                      disabled={isPersonalInformationLoading}
+                      theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
+                    />
+                  </View>
 
-              {passwordError !== "" ? <Text style={styles.AlertComponent}>
-                {passwordError}
-              </Text> : ""}
-
-              <View>
-                <View style={styles.inputElementCopper}>
-                  <Text style={styles.textInput}>Password Actual</Text>
-                  <TextInput
-                    placeholder='Password actual'
-                    onChangeText={(text) => setPasswordFields({ ...passwordFields, currentPassword: text })}
-                    secureTextEntry={true}
-                    value={String(passwordFields.currentPassword)}
-                    style={styles.input}
-                    underlineColor={Colors.primaryDarkest}
+                  <Button
+                    mode="contained"
+                    onPress={HandlePessoalInformation}
                     disabled={isPasswordLoading}
-                    theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
-                  />
-                </View>
-                <View style={styles.inputElementCopper}>
-                  <Text style={styles.textInput}>Nova password</Text>
-                  <TextInput
-                    placeholder='Nova password'
-                    secureTextEntry={false}
-                    onChangeText={(text) => setPasswordFields({ ...passwordFields, newPassword: text })}
-                    value={String(passwordFields.newPassword)}
-                    style={styles.input}
-                    underlineColor={Colors.primaryDarkest}
-                    disabled={isPasswordLoading}
-                    theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
-                  />
+                    loading={isPasswordLoading}
+                    style={[styles.button, { borderRadius: 10 }]}
+                    labelStyle={styles.buttonLabel}
+                  >
+                    Alterar dados pessoais
+                  </Button>
                 </View>
               </View>
 
-              <Button
-                mode="contained"
-                onPress={HandlePasswordChange}
-                disabled={isPasswordLoading}
-                loading={isPasswordLoading}
-                style={[styles.button, { borderRadius: 10 }]}
-                labelStyle={styles.buttonLabel}
-              >
-                Mudar senha
-              </Button>
 
-            </View>
+              <View style={{ marginTop: 30 }}>
+                <View style={{ marginTop: 20, marginBottom: 18 }}>
+                  <Text style={styles.titleInterger}>Alterar Password</Text>
+                </View>
 
-            <View>
-              <View style={{ marginTop: 20, marginBottom: 18 }}>
-                <Text style={styles.titleInterger}>Minha Sessao</Text>
+                {passwordError !== "" ? <Text style={styles.AlertComponent}>
+                  {passwordError}
+                </Text> : ""}
+
+                <View>
+                  <View style={styles.inputElementCopper}>
+                    <Text style={styles.textInput}>Password Actual</Text>
+                    <TextInput
+                      placeholder='Password actual'
+                      onChangeText={(text) => setPasswordFields({ ...passwordFields, currentPassword: text })}
+                      secureTextEntry={true}
+                      value={String(passwordFields.currentPassword)}
+                      style={styles.input}
+                      underlineColor={Colors.primaryDarkest}
+                      disabled={isPasswordLoading}
+                      theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
+                    />
+                  </View>
+                  <View style={styles.inputElementCopper}>
+                    <Text style={styles.textInput}>Nova password</Text>
+                    <TextInput
+                      placeholder='Nova password'
+                      secureTextEntry={false}
+                      onChangeText={(text) => setPasswordFields({ ...passwordFields, newPassword: text })}
+                      value={String(passwordFields.newPassword)}
+                      style={styles.input}
+                      underlineColor={Colors.primaryDarkest}
+                      disabled={isPasswordLoading}
+                      theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
+                    />
+                  </View>
+                </View>
+
+                <Button
+                  mode="contained"
+                  onPress={HandlePasswordChange}
+                  disabled={isPasswordLoading}
+                  loading={isPasswordLoading}
+                  style={[styles.button, { borderRadius: 10 }]}
+                  labelStyle={styles.buttonLabel}
+                >
+                  Mudar senha
+                </Button>
+
               </View>
 
-              <TouchableOpacity style={styles.dangerButton} onPress={handleLogOut}>
-                <Text style={styles.buttonTextIng}>Terminar sessao</Text>
-              </TouchableOpacity>
+              <View style={{ marginTop: 30 }}>
+                <View style={{ marginTop: 20, marginBottom: 18 }}>
+                  <Text style={styles.titleInterger}>Minha Sessao</Text>
+                </View>
+
+                <TouchableOpacity style={styles.dangerButton} onPress={handleLogOut}>
+                  <Text style={styles.buttonTextIng}>Terminar sessao</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        ) :
-          <ActivityIndicator style={{ marginTop: 20 }} size={40} color={Colors.dark1} />
-        }
+          ) :
+            <ActivityIndicator style={{ marginTop: 20 }} size={25} color={Colors.dark1} />
+          }
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -382,7 +414,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   inputElementCopper: {
-    marginBottom: 20
+    marginBottom: 12
   },
   textInput: {
     fontWeight: "bold",
@@ -448,5 +480,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     borderRadius: 10,
     fontSize: 15
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginTop: 20,
   },
 });

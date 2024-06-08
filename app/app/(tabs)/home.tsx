@@ -1,6 +1,7 @@
 import UpperNavbar from '@/components/UpperNavbar';
 import React from 'react';
 import { StyleSheet, Text, ScrollView, Dimensions } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function HomeScreen() {
@@ -8,25 +9,27 @@ function HomeScreen() {
     <SafeAreaView>
       <UpperNavbar />
       <ScrollView showsHorizontalScrollIndicator={false} style={styles.container}>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
-        <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+        <View style={{ padding: 10 }}>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+          <Text>Afonso Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod dolore repellendus rerum consectetur, nemo inventore harum natus quis quidem, sapiente ea eos quos ullam accusamus mollitia impedit alias vel cum?</Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -35,13 +38,12 @@ function HomeScreen() {
 const deviceHeight = Dimensions.get('window').height;
 const desiredHeight = deviceHeight - 100;
 
-export const styles = StyleSheet.create({ 
-  container: { 
-    padding: 10, 
-    marginTop: 50, 
-    height: desiredHeight, 
-    backgroundColor: 'white'
-  } 
+export const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    height: desiredHeight,
+    backgroundColor: '#fff'
+  }
 });
 
 export default HomeScreen;

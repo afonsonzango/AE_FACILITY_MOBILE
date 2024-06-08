@@ -1,12 +1,11 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
-import { TextInput, Button, ActivityIndicator } from 'react-native-paper';
-import { Colors } from '@/constants/Colors';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { API_URL } from '@/services/axiosConfig';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Colors } from "@/constants/Colors";
+import { API_URL } from "@/services/axiosConfig";
+import axios from "axios";
+import { router, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Button, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Register = () => {
     const [error, setError] = useState<string>('');
@@ -20,7 +19,7 @@ const Register = () => {
     });
 
     const [pVisible, setPVisible] = useState<boolean>(false);
-    const router = useRouter();
+    // const router = useRouter();
 
     const handleRegister = async () => {
         setIsLoading(true);
@@ -81,9 +80,8 @@ const Register = () => {
     }, [data]);
 
     return (
-        <ScrollView showsHorizontalScrollIndicator={false}>
-
-            <SafeAreaView>
+        <SafeAreaView>
+            <ScrollView showsHorizontalScrollIndicator={false}>
                 <View style={{ flex: 1, padding: 20, marginTop: 60 }}>
                     <Text style={{ fontSize: 25, fontWeight: '800', color: '#000' }}>EA Facility</Text>
                     <Text style={{ fontSize: 17, fontWeight: '800', color: '#000', marginTop: 10 }}>Criar nova conta</Text>
@@ -178,17 +176,19 @@ const Register = () => {
                             )}
                         </Button>
 
-                        <hr style={{ marginTop: 20, width: 100 }} />
-
-                        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
-                            <Text onPress={() => router.push('/auth/login')}>Já possui uma conta? Faça login</Text>
+                        <View style={styles.registerContainer}>
+                            <Button onPress={() => router.replace('/auth/login')}>
+                                <Text>Já possui uma conta? Faça login</Text>
+                            </Button>
                         </View>
                     </View>
                 </View>
-            </SafeAreaView>
-        </ScrollView>
-    );
-};
+            </ScrollView>
+        </SafeAreaView>
+    )
+}
+
+export default Register;
 
 const styles = StyleSheet.create({
     input: {
@@ -208,6 +208,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         fontSize: 15,
     },
+    registerContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 15,
+    },
 });
-
-export default Register;

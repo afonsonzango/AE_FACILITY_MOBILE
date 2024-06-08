@@ -4,7 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native";
+import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
 import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -22,7 +23,7 @@ const Login = () => {
     setIsLoading(true);
 
     if (!data.email || !data.password) {
-      setError('E-mail e Password sao obrigatorios.');
+      setError('E-mail e Password são obrigatórios.');
       setIsLoading(false);
       return;
     }
@@ -72,32 +73,23 @@ const Login = () => {
   }, [data]);
 
   return (
-    <SafeAreaView>
-      <View style={{ flex: 1, padding: 20, marginTop: 60 }}>
-        <Text style={{ fontSize: 25, fontWeight: 800, color: "#000" }}>EA Facility</Text>
-        <Text style={{ marginTop: 12, fontSize: 16, fontWeight: 500, color: "#000" }}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.title}>EA Facility</Text>
+        <Text style={styles.subtitle}>
           Consectetur adipisicing elit. Aut aliquam, culpa eligendi deleniti, soluta libero doloribus quibusdam ipsa voluptas.
         </Text>
 
-        {error && <Text style={{
-          marginTop: 15,
-          fontSize: 15,
-          fontWeight: 600,
-          color: "#000",
-          paddingHorizontal: 15,
-          paddingVertical: 15,
-          borderRadius: 6,
-          backgroundColor: "#ff1212"
-        }}>{error}</Text>}
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
-        <View style={{ marginTop: 20 }}>
+        <View style={styles.inputContainer}>
           <TextInput
             label="E-mail"
             left={<TextInput.Icon icon="email" />}
             style={styles.input}
             underlineColor={Colors.primaryDarkest}
             disabled={isLoading}
-            theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }} // Set primary color
+            theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
             onChangeText={(value) => setData({ ...data, email: value })}
           />
 
@@ -106,51 +98,92 @@ const Login = () => {
             secureTextEntry={!pVisible}
             left={<TextInput.Icon icon="lock" />}
             right={<TextInput.Icon icon={!pVisible ? "eye-off" : "eye"} onPress={() => setPVisible(!pVisible)} />}
-            style={[styles.input, { marginTop: 15 }]}
+            style={[styles.input, styles.passwordInput]}
             underlineColor={Colors.primaryDarkest}
             disabled={isLoading}
-            theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }} // Set primary color
+            theme={{ colors: { text: Colors.dark1, primary: Colors.primaryDarkest } }}
             onChangeText={(value) => setData({ ...data, password: value })}
           />
 
           <Button
             mode="contained"
             onPress={handlelogin}
-            style={[styles.button, { borderRadius: 10 }]}
+            style={styles.button}
             labelStyle={styles.buttonLabel}
             disabled={isLoading}
           >
             {isLoading ? <ActivityIndicator size={20} color={"#fff"} style={{ marginTop: 8 }} /> : <Text>Entrar</Text>}
           </Button>
 
-          {/* <hr style={{ marginTop: 20, width: 100 }} /> */}
-
-          <View style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: 15}}>
-            <Text onPress={() => router.push('/auth/register')}>Criar nova conta</Text>
+          <View style={styles.registerContainer}>
+            <Button onPress={() => router.replace('/auth/register')}>
+              <Text>Criar conta</Text>
+            </Button>
           </View>
         </View>
       </View>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 60,
+  },
+  title: {
+    fontSize: 25,
+    fontWeight: '800',
+    color: "#000",
+  },
+  subtitle: {
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '500',
+    color: "#000",
+  },
+  errorText: {
+    marginTop: 15,
+    fontSize: 15,
+    fontWeight: '600',
+    color: "#000",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 6,
+    backgroundColor: "#ff1212",
+  },
+  inputContainer: {
+    marginTop: 20,
+  },
   input: {
     backgroundColor: Colors.transparentPrimaryLight,
     fontWeight: 'bold',
-    fontSize: 15
+    fontSize: 15,
+  },
+  passwordInput: {
+    marginTop: 15,
   },
   button: {
     marginTop: 15,
     backgroundColor: Colors.dark1,
     padding: 6,
-    margin: 0
+    margin: 0,
+    borderRadius: 10,
   },
   buttonLabel: {
     color: Colors.dark9,
     fontWeight: 'bold',
-    borderRadius: 10,
-    fontSize: 15
+    fontSize: 15,
+  },
+  registerContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
   },
 });
 
