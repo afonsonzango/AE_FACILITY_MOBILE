@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native"
+import { Image, StyleSheet, Text, View } from "react-native"
 import { TabBarIcon } from "./navigation/TabBarIcon"
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -6,8 +6,8 @@ const UpperNavbar = () => {
     return (
       <SafeAreaView>
         <View style={styles.NavbarTop}>
-            <Text style={{ color: "#000", fontWeight: "bold", fontSize: 17, marginTop: -13 }}>AE Facility</Text>
-            <TabBarIcon name={'bag-outline'} color={"#000"} style={{ marginTop: -13 }} />
+            <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
+            <TabBarIcon name={'bag-outline'} color={"#000"} />
         </View>
       </SafeAreaView>
     )
@@ -24,10 +24,13 @@ const styles = StyleSheet.create({
       justifyContent: "space-between",
       alignItems: "center",
       flexDirection: "row",
-      position: "absolute",
       top: 0,
       width: "100%",
       zIndex: 100
+    },
+    logo: {
+      width: 190,
+      height: 30
     }
   });
 

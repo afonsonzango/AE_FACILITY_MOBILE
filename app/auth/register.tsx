@@ -25,7 +25,7 @@ const Register = () => {
         setIsLoading(true);
 
         if (!data.name || !data.email || !data.password1 || !data.password2) {
-            setError('E-mail, Password e Confirmar Senha são obrigatórios.');
+            setError('Nome, E-mail, Password são campos obrigatórios.');
             setIsLoading(false);
             return;
         }
@@ -80,8 +80,8 @@ const Register = () => {
     }, [data]);
 
     return (
-        <SafeAreaView>
-            <ScrollView showsHorizontalScrollIndicator={false}>
+        <ScrollView showsHorizontalScrollIndicator={false}>
+            <SafeAreaView>
                 <View style={{ flex: 1, padding: 20, marginTop: 60 }}>
                     <Text style={{ fontSize: 25, fontWeight: '800', color: '#000' }}>EA Facility</Text>
                     <Text style={{ fontSize: 17, fontWeight: '800', color: '#000', marginTop: 10 }}>Criar nova conta</Text>
@@ -96,11 +96,13 @@ const Register = () => {
                                 marginTop: 15,
                                 fontSize: 15,
                                 fontWeight: '600',
-                                color: '#000',
+                                color: "#000",
                                 paddingHorizontal: 15,
                                 paddingVertical: 15,
                                 borderRadius: 6,
-                                backgroundColor: '#ff1212',
+                                backgroundColor: "#ff6666", // lighter red color
+                                borderWidth: 2, // thickness of the border
+                                borderColor: "#b30000", // darker red color for the border
                             }}
                         >
                             {error}
@@ -183,8 +185,8 @@ const Register = () => {
                         </View>
                     </View>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 

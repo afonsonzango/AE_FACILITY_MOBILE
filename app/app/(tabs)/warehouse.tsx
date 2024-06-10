@@ -2,8 +2,41 @@ import UpperNavbar from "@/components/UpperNavbar";
 import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./home";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { API_URL } from "@/services/axiosConfig";
+import { router, useFocusEffect } from "expo-router";
+import React from "react";
 
 const WarehouseScreen = () => {
+  // Make sure the token is still valid
+  const checkTokenAndNavigate = async () => {
+    const userToken = await AsyncStorage.getItem('token');
+
+    try {
+      const response = await axios.post(
+        `${API_URL}/user`,
+        {},
+        {
+          headers: {
+            token: userToken
+          },
+        }
+      );
+      
+      console.log("Response: ");
+      console.log(response.data.user);
+    } catch (error) {
+      router.replace('/auth/login');
+      console.log(error);
+    } 
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkTokenAndNavigate();
+    }, [])
+  );
   return (
     <View>
       <SafeAreaView>

@@ -4,8 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -75,7 +74,9 @@ const Login = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={styles.title}>EA Facility</Text>
+        {/* <Text style={styles.title}>EA Facility</Text> */}
+        <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
+        
         <Text style={styles.subtitle}>
           Consectetur adipisicing elit. Aut aliquam, culpa eligendi deleniti, soluta libero doloribus quibusdam ipsa voluptas.
         </Text>
@@ -129,6 +130,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
@@ -154,7 +156,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 6,
-    backgroundColor: "#ff1212",
+    backgroundColor: "#ff6666", // lighter red color
+    borderWidth: 2, // thickness of the border
+    borderColor: "#b30000", // darker red color for the border
   },
   inputContainer: {
     marginTop: 20,
@@ -185,6 +189,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 15,
   },
+  logo: {
+    width: 260,
+    height: 40
+  }
 });
 
 export default Login;
