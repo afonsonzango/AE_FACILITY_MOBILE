@@ -1,5 +1,5 @@
 import UpperNavbar from "@/components/UpperNavbar";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native"
+import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./home";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,7 +7,7 @@ import axios from "axios";
 import { API_URL } from "@/services/axiosConfig";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Button } from "react-native-paper";
+import { ActivityIndicator, Button, Title, Text as PaperText } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 
 const WarehouseScreen = () => {
@@ -165,6 +165,17 @@ const WarehouseScreen = () => {
       checkTokenAndNavigate();
     }, [])
   );
+
+
+  // Working on the modal thing
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  // Woking on separated tabs
+  const [activeTab, setActiveTab] = React.useState({
+    tabOne: true,
+    tabTwo: false
+  });
+
   return (
     <View>
       <SafeAreaView>
@@ -174,18 +185,74 @@ const WarehouseScreen = () => {
             {isWarehouseLoading ? <ActivityIndicator size={30} color={Colors.dark1} style={{ marginTop: 20 }} /> : (
               <>
                 {hashWarehouse ? (
-                  <View style={stylesp.newStorePaddingView}>
-                    <View style={stylesp.centerItem}>
-                      <Text style={stylesp.title}>{name}, Nao tens uma Loja!</Text>
-                      <Text style={stylesp.description}>Crie uma nova Loja para poder partilhar os seus produtos</Text>
-                      <Button
-                        mode="contained"
-                        style={stylesp.button}
-                        onPress={() => router.push('/app/aditional/editWarehouse')}
-                      >
-                        Editar
-                      </Button>
+                  <View>
+                    <View><Title style={{ fontWeight: "bold" }}>{warehouse.name}</Title></View>
+                    <View style={{ flexDirection: "row", marginBottom: 10, gap: 8, alignItems: "center" }}>
+                      <View style={{ flexDirection: "row" }}><Text style={{ fontWeight: 700, padding: 5, paddingHorizontal: 15, backgroundColor: Colors.primaryLight, borderWidth: 1, borderColor: Colors.dark1, borderRadius: 15 }}>{warehouse.category.name}</Text></View>
+                      <View style={{ flexDirection: "row" }}><Text style={{ fontWeight: 700, padding: 5, paddingHorizontal: 15, backgroundColor: "#f0f0f0", borderWidth: 1, borderColor: "#ddd", borderRadius: 15 }}>{warehouse.description}</Text></View>
                     </View>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text
+                        onPress={() => setModalVisible(true)}
+                        style={{
+                          fontWeight: 700,
+                          padding: 5,
+                          paddingHorizontal: 15,
+                          backgroundColor: "#f0f0f0",
+                          borderWidth: 1,
+                          borderColor: "#ddd",
+                          borderRadius: 15
+                        }}>
+                        Configuracoes
+                      </Text>
+                    </View>
+
+                    {modalVisible && <View style={{ justifyContent: "center", alignItems: "center", height: Dimensions.get('window').height - 106, width: Dimensions.get('window').width, position: "absolute", zIndex: 100, backgroundColor: "rgba(0,0,0,0.5)", left: -10, top: -10 }}>
+                      <View style={{ width: Dimensions.get('window').width - 20, backgroundColor: "#fff", padding: 20, borderRadius: 10 }}>
+                        <Title style={{ marginBottom: 20, fontWeight: "bold" }}>Configuracoes</Title>
+
+                        <Button
+                          style={{ marginBottom: 10, backgroundColor: Colors.dark1 }}
+                          mode="contained"
+                          onPress={() => router.replace("/app/aditional/editWarehouse")}
+                        >
+                          Editar armazem
+                        </Button>
+
+                        <Button
+                          mode="text"
+                          style={{ marginBottom: 10, backgroundColor: "red" }}
+                          labelStyle={{ color: "#fff" }}
+                          onPress={() => {/* Add your delete function here */ }}
+                        >
+                          Eliminar armazem
+                        </Button>
+
+                        <Button
+                          mode="contained"
+                          style={{ backgroundColor: "#fff" }}
+                          labelStyle={{ color: "#000" }}
+                          onPress={() => setModalVisible(false)}
+                        >
+                          Sair
+                        </Button>
+                      </View>
+                    </View>}
+
+                    <View style={{ paddingVertical: 10, marginTop: 50, flexDirection: "row", width: "100%", justifyContent: "space-around", borderBottomColor: "#f0f0f0", borderBottomWidth: 1 }}>
+                      <TouchableOpacity style={{backgroundColor: activeTab.tabOne ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10}} onPress={() => setActiveTab({ tabOne: true, tabTwo: false })}><PaperText style={{ color: activeTab.tabOne ? "#fff" : "#000", fontWeight: "bold"}}>Productos</PaperText></TouchableOpacity>
+                      <TouchableOpacity style={{backgroundColor: activeTab.tabTwo ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10}} onPress={() => setActiveTab({ tabOne: false, tabTwo: true })}><PaperText style={{ color: activeTab.tabTwo ? "#fff" : "#000", fontWeight: "bold" }}>Reservas</PaperText></TouchableOpacity>
+                    </View>
+
+                    {/* Componentes do tab que criei - One */}
+                    {activeTab.tabOne && <View style={{ paddingVertical: 10 }}>
+                        <Text style={{ fontWeight: "bold" }}>Produtos</Text>
+                    </View>}
+
+                    {/* Componentes do tab que criei - Two */}
+                    {activeTab.tabTwo && <View style={{ paddingVertical: 10 }}>
+                        <Text style={{ fontWeight: "bold" }}>Reservas</Text>
+                    </View>}
                   </View>
                 ) : (
                   <View style={stylesp.newStorePaddingView}>

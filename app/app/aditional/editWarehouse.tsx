@@ -182,7 +182,7 @@ const EditWarehouse = () => {
                             loading={loading}
                         />
 
-                        <Button onPress={() => router.back()}>
+                        <Button onPress={() => router.replace("/app/warehouse")}>
                             <Text>Cancelar</Text>
                         </Button>
                     </View>
