@@ -7,7 +7,7 @@ import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { API_URL } from '@/services/axiosConfig';
 import axios from 'axios';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Title } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,6 +15,7 @@ function HomeScreen() {
 
   const [catLoading, setCatLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [warehouseId, setWarehouseId] = useState(null);
 
   const fetchCategories = async () => {
     setCatLoading(true);
@@ -35,6 +36,33 @@ function HomeScreen() {
     }, [])
   );
 
+  // Make sure the token is still valid
+  const checkTokenAndNavigate = async () => {
+    const userToken = await AsyncStorage.getItem('token');
+
+    try {
+      const userStatus = await axios.post(
+        `${API_URL}/user`,
+        {},
+        {
+          headers: {
+            token: userToken
+          },
+        }
+      );
+
+      setWarehouseId(userStatus.data.user.warehouse.id);
+    } catch (error) {
+      router.replace('/auth/login');
+      console.log(error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkTokenAndNavigate();
+    }, [])
+  );
 
   // Loading products
   const [isProductLoading, setIsProductLoading] = useState<boolean>();
@@ -44,7 +72,7 @@ function HomeScreen() {
     setIsProductLoading(true);
 
     try {
-      const productsResponse = await axios.get(`${API_URL}/product/all`);
+      const productsResponse = await axios.get(`${API_URL}/product/random/${warehouseId}`);
       setLoadedProducts(productsResponse.data.data);
     } catch (error) {
       console.log(error);
@@ -58,35 +86,6 @@ function HomeScreen() {
   useFocusEffect(
     React.useCallback(() => {
       execProductList();
-    }, [])
-  );
-
-  // Make sure the token is still valid
-  const checkTokenAndNavigate = async () => {
-    const userToken = await AsyncStorage.getItem('token');
-
-    try {
-      const response = await axios.post(
-        `${API_URL}/user`,
-        {},
-        {
-          headers: {
-            token: userToken
-          },
-        }
-      );
-
-      console.log("Response: ");
-      console.log(response.data.user);
-    } catch (error) {
-      router.replace('/auth/login');
-      console.log(error);
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      checkTokenAndNavigate();
     }, [])
   );
 
@@ -114,12 +113,17 @@ function HomeScreen() {
             )
           )}
 
+          {loadedProducts.length === 0 && !isProductLoading && <View style={{ marginTop: 20 }}>
+            <Title>Sem produtos!</Title>  
+            <Text>Nenhum produto encontrado, tente novamente mais tarde.</Text>  
+          </View>}
+
           {isProductLoading ? <ActivityIndicator size={24} color={Colors.dark1} style={{ marginTop: 20 }} /> : (
             <>
               <View style={[styles.flexRowWrapProduct, styles.marginBottom25]}>
                 {loadedProducts.map((element: any, index) => {
                   const imageUrl = element.img_path !== "" ? API_URL + "/file/" + element.img_path : API_URL + "/file/default.png";
-                
+
                   return (
                     <View key={index} style={[styles.productItemComponent, index % 2 === 0 && styles.evenItem]}>
                       <View style={styles.viewImage}>

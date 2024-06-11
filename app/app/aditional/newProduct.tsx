@@ -108,15 +108,14 @@ const NewProduct = () => {
         <ScrollView style={styles.container}>
             <SafeAreaView>
                 <View style={styles.IntroTextContainer}>
-                    <Text style={styles.TextTitle}>Por favor, faca login</Text>
-                    <Text style={styles.IntroText}>Use seus dados e detalhes para uma esperiencia no aplicativo</Text>
+                    <Text style={styles.TextTitle}>Adicionar Novo produto</Text>
                 </View>
 
                 <Text style={styles.label}>Nome do produto</Text>
                 <TextInput
                     value={name}
                     onChangeText={(text) => setName(text)}
-                    style={styles.input}
+                    style={[styles.input, { marginBottom: 15 }]}
                 />
 
                 <Text style={styles.label}>Selecione uma imagem</Text>
@@ -134,7 +133,7 @@ const NewProduct = () => {
                 <TextInput
                     value={description}
                     onChangeText={(text) => setDescription(text)}
-                    style={styles.input}
+                    style={[styles.input, { marginBottom: 15 }]}
                 />
 
                 <Text style={styles.label}>Preco</Text>
@@ -147,10 +146,8 @@ const NewProduct = () => {
                     style={styles.input}
                 />
 
-                <View style={{ marginBottom: 40 }}>
-                    <TouchableOpacity style={{ marginTop: 20 }} onPress={handleSubmit}>
-                        <Text style={styles.buttonText}>Adicionar produto</Text>
-                    </TouchableOpacity>
+                <View style={{ marginBottom: 40, marginTop: 20 }}>
+                    <MyTouchableOpacity text='Novo produto' onPress={handleSubmit} />
                     <Button style={{ marginTop: 10 }} onPress={() => router.replace("/app/warehouse")}>Concluido</Button>
                 </View>
             </SafeAreaView>

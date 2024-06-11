@@ -228,9 +228,9 @@ const WarehouseScreen = () => {
                       <View style={{ flexDirection: "row" }}><Text style={{ fontWeight: 700, padding: 5, paddingHorizontal: 15, backgroundColor: Colors.primaryLight, borderWidth: 1, borderColor: Colors.dark1, borderRadius: 15 }}>{warehouse.category.name}</Text></View>
                       <View style={{ flexDirection: "row" }}><Text style={{ fontWeight: 700, padding: 5, paddingHorizontal: 15, backgroundColor: "#f0f0f0", borderWidth: 1, borderColor: "#ddd", borderRadius: 15 }}>{warehouse.description}</Text></View>
                     </View>
-                    <View style={{ flexDirection: "row" }}>
+                    <View style={{ flexDirection: "row", gap: 10 }}>
                       <Text
-                        onPress={() => setModalVisible(true)}
+                        onPress={() => router.replace("/app/aditional/editWarehouse")}
                         style={{
                           fontWeight: 700,
                           padding: 5,
@@ -242,39 +242,20 @@ const WarehouseScreen = () => {
                         }}>
                         Configuracoes
                       </Text>
+
+                      <Text
+                        style={{
+                          fontWeight: 700,
+                          padding: 5,
+                          paddingHorizontal: 15,
+                          backgroundColor: "#f0f0f0",
+                          borderWidth: 1,
+                          borderColor: "#ddd",
+                          borderRadius: 15
+                        }}>
+                        Eliminar Armazem
+                      </Text>
                     </View>
-
-                    {modalVisible && <View style={{ justifyContent: "center", alignItems: "center", height: Dimensions.get('window').height - 106, width: Dimensions.get('window').width, position: "absolute", zIndex: 100, backgroundColor: "rgba(0,0,0,0.5)", left: -10, top: -10 }}>
-                      <View style={{ width: Dimensions.get('window').width - 20, backgroundColor: "#fff", padding: 20, borderRadius: 10 }}>
-                        <Title style={{ marginBottom: 20, fontWeight: "bold" }}>Configuracoes</Title>
-
-                        <Button
-                          style={{ marginBottom: 10, backgroundColor: Colors.dark1 }}
-                          mode="contained"
-                          onPress={() => router.replace("/app/aditional/editWarehouse")}
-                        >
-                          Editar armazem
-                        </Button>
-
-                        <Button
-                          mode="text"
-                          style={{ marginBottom: 10, backgroundColor: "red" }}
-                          labelStyle={{ color: "#fff" }}
-                          onPress={() => {/* Add your delete function here */ }}
-                        >
-                          Eliminar armazem
-                        </Button>
-
-                        <Button
-                          mode="contained"
-                          style={{ backgroundColor: "#fff" }}
-                          labelStyle={{ color: "#000" }}
-                          onPress={() => setModalVisible(false)}
-                        >
-                          Sair
-                        </Button>
-                      </View>
-                    </View>}
 
                     <View style={{ paddingVertical: 10, marginTop: 50, flexDirection: "row", width: "100%", justifyContent: "space-around", borderBottomColor: "#f0f0f0", borderBottomWidth: 1 }}>
                       <TouchableOpacity style={{ backgroundColor: activeTab.tabOne ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: true, tabTwo: false })}><PaperText style={{ color: activeTab.tabOne ? "#fff" : "#000", fontWeight: "bold" }}>Productos</PaperText></TouchableOpacity>
