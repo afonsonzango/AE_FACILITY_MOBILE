@@ -10,12 +10,13 @@ import axios from 'axios';
 import { ActivityIndicator, Title } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addToWishlist } from '@/components/addToWishList';
 
 function HomeScreen() {
-
   const [catLoading, setCatLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [warehouseId, setWarehouseId] = useState(null);
+  const [userId, setUserId] = useState<any>();
 
   const fetchCategories = async () => {
     setCatLoading(true);
@@ -70,9 +71,11 @@ function HomeScreen() {
 
   const execProductList = async () => {
     setIsProductLoading(true);
+    const userId = await AsyncStorage.getItem("userId");
+    setUserId(userId);
 
     try {
-      const productsResponse = await axios.get(`${API_URL}/product/random/${warehouseId}`);
+      const productsResponse = await axios.get(`${API_URL}/product/random/${userId}`);
       setLoadedProducts(productsResponse.data.data);
     } catch (error) {
       console.log(error);
@@ -133,12 +136,15 @@ function HomeScreen() {
                           resizeMode='cover'
                         />
 
-                        <View style={styles.viewRating}>
-                          <TabBarIcon name={'heart'} color={"#999"} size={30} />
-                        </View>
+                        <TouchableOpacity onPress={() => addToWishlist(userId, element.id)}>
+                          <View style={styles.viewRating}>
+                            <TabBarIcon name={'heart'} color={"#999"} size={30} />
+                          </View>
+                        </TouchableOpacity>
+                        
                         <View style={styles.PriceNum}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                            <Text>{element.price}</Text>
+                            <Text>Kz {element.price}</Text>
                           </View>
                         </View>
                       </View>

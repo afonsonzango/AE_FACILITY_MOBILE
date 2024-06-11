@@ -10,6 +10,7 @@ import { ActivityIndicator, Checkbox } from 'react-native-paper';
 import MyTouchableOpacity from '@/components/MyTouchableOpacity';
 import { Colors } from '@/constants/Colors';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { addToWishlist } from '@/components/addToWishList';
 
 const SearchScreen = () => {
   const [inputText, setInputText] = useState<any>('');
@@ -167,9 +168,11 @@ const SearchScreen = () => {
                             resizeMode='cover'
                           />
 
-                          <View style={styles.viewRating}>
-                            <TabBarIcon name={'heart'} color={"#999"} size={30} />
-                          </View>
+                          <TouchableOpacity onPress={() => addToWishlist(userId, element.id)}>
+                            <View style={styles.viewRating}>
+                              <TabBarIcon name={'heart'} color={"#999"} size={30} />
+                            </View>
+                          </TouchableOpacity>
                           <View style={styles.PriceNum}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                               <Text>{element.price}</Text>
