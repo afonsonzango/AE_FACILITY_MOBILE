@@ -7,7 +7,7 @@ import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { API_URL } from '@/services/axiosConfig';
 import axios from 'axios';
-import { ActivityIndicator, Button, Surface } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -61,7 +61,6 @@ function HomeScreen() {
     }, [])
   );
 
-
   // Make sure the token is still valid
   const checkTokenAndNavigate = async () => {
     const userToken = await AsyncStorage.getItem('token');
@@ -76,13 +75,13 @@ function HomeScreen() {
           },
         }
       );
-      
+
       console.log("Response: ");
       console.log(response.data.user);
     } catch (error) {
       router.replace('/auth/login');
       console.log(error);
-    } 
+    }
   };
 
   useFocusEffect(
@@ -120,7 +119,7 @@ function HomeScreen() {
               <View style={[styles.flexRowWrapProduct, styles.marginBottom25]}>
                 {loadedProducts.map((element: any, index) => {
                   const imageUrl = element.img_path !== "" ? API_URL + "/file/" + element.img_path : API_URL + "/file/default.png";
-
+                
                   return (
                     <View key={index} style={[styles.productItemComponent, index % 2 === 0 && styles.evenItem]}>
                       <View style={styles.viewImage}>
@@ -129,16 +128,17 @@ function HomeScreen() {
                           style={styles.product_image}
                           resizeMode='cover'
                         />
-                        
+
                         <View style={styles.viewRating}>
                           <TabBarIcon name={'heart'} color={"#999"} size={30} />
                         </View>
                         <View style={styles.PriceNum}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                            Kz <Text style={{fontWeight: 'bold'}}>{element.price}</Text>
+                            <Text>{element.price}</Text>
                           </View>
                         </View>
                       </View>
+
                       <View style={styles.productTitle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <Text style={styles.warehouseName}>{element.warehouse.name}</Text>
@@ -154,7 +154,6 @@ function HomeScreen() {
                   );
                 })}
               </View>
-
             </>
           )}
         </View>
@@ -164,7 +163,7 @@ function HomeScreen() {
 }
 
 const deviceHeight = Dimensions.get('window').height;
-const desiredHeight = deviceHeight - 105;
+const desiredHeight = deviceHeight - 90;
 
 export const VIEW_PADDING = 10;
 
@@ -173,7 +172,7 @@ const categoryComponentWidth: number = (width - VIEW_PADDING * 2) / 2
 
 export const styles = StyleSheet.create({
   container: {
-    marginTop: 0,
+    marginTop: -25,
     height: desiredHeight,
     backgroundColor: '#fff'
   },
@@ -197,7 +196,7 @@ export const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 15,
-    fontWeight: 'bold',
+    // fontWeight: 800,
   },
   activeCategory: {
     backgroundColor: Colors.light8,
@@ -243,14 +242,14 @@ export const styles = StyleSheet.create({
   productname: {
     fontSize: 15,
     marginTop: 5,
-    fontWeight: 800,
+    // fontWeight: 800,
     marginLeft: 6,
     marginBottom: 10
   },
   productDesc: {
     fontSize: 14,
     marginLeft: 6,
-    fontWeight: 500
+    // fontWeight: 500
   },
   buttonReserve: {
     borderRadius: 5,
@@ -295,7 +294,7 @@ export const styles = StyleSheet.create({
     display: "flex",
     borderRadius: 15,
     marginTop: 10,
-    fontWeight: 800
+    // fontWeight: 800
   }
 });
 

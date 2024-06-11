@@ -1,5 +1,5 @@
 import UpperNavbar from "@/components/UpperNavbar";
-import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./home";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,6 +9,9 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Button, Title, Text as PaperText } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import MyTouchableOpacity from "@/components/MyTouchableOpacity";
+import DangerButton from "@/components/DangerButton";
 
 const WarehouseScreen = () => {
 
@@ -121,12 +124,7 @@ const WarehouseScreen = () => {
             })
               .then(response => response.json())
               .then(data => {
-                if (data.success) {
-                  console.log("Product deleted successfully.");
-                } else {
-                  console.error(data.message);
-                  removeProduct(productId);
-                }
+                removeProduct(productId);
               })
               .catch(error => {
                 console.error('Error:', error);
@@ -175,6 +173,45 @@ const WarehouseScreen = () => {
     tabOne: true,
     tabTwo: false
   });
+
+  // Showing products in list or grid
+  // Loading products
+  const [isProductLoading, setIsProductLoading] = useState<boolean>();
+  const [loadedProducts, setLoadedProducts] = useState([]);
+
+  const execProductList = async () => {
+    setIsProductLoading(true);
+
+    try {
+      const userToken = await AsyncStorage.getItem('token');
+
+      const response: any = await axios.post(
+        `${API_URL}/user`,
+        {},
+        {
+          headers: {
+            token: userToken
+          },
+        }
+      );
+      
+      const warehouseId = response.data.user.warehouse.id;
+      
+      const productsResponse = await axios.get(`${API_URL}/product/warehouse/all/${warehouseId}`);
+      
+      setLoadedProducts(productsResponse.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsProductLoading(false);
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      execProductList();
+    }, [])
+  );
 
   return (
     <View>
@@ -240,18 +277,50 @@ const WarehouseScreen = () => {
                     </View>}
 
                     <View style={{ paddingVertical: 10, marginTop: 50, flexDirection: "row", width: "100%", justifyContent: "space-around", borderBottomColor: "#f0f0f0", borderBottomWidth: 1 }}>
-                      <TouchableOpacity style={{backgroundColor: activeTab.tabOne ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10}} onPress={() => setActiveTab({ tabOne: true, tabTwo: false })}><PaperText style={{ color: activeTab.tabOne ? "#fff" : "#000", fontWeight: "bold"}}>Productos</PaperText></TouchableOpacity>
-                      <TouchableOpacity style={{backgroundColor: activeTab.tabTwo ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10}} onPress={() => setActiveTab({ tabOne: false, tabTwo: true })}><PaperText style={{ color: activeTab.tabTwo ? "#fff" : "#000", fontWeight: "bold" }}>Reservas</PaperText></TouchableOpacity>
+                      <TouchableOpacity style={{ backgroundColor: activeTab.tabOne ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: true, tabTwo: false })}><PaperText style={{ color: activeTab.tabOne ? "#fff" : "#000", fontWeight: "bold" }}>Productos</PaperText></TouchableOpacity>
+                      <TouchableOpacity style={{ backgroundColor: activeTab.tabTwo ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: false, tabTwo: true })}><PaperText style={{ color: activeTab.tabTwo ? "#fff" : "#000", fontWeight: "bold" }}>Reservas</PaperText></TouchableOpacity>
                     </View>
 
                     {/* Componentes do tab que criei - One */}
                     {activeTab.tabOne && <View style={{ paddingVertical: 10 }}>
-                        <Text style={{ fontWeight: "bold" }}>Produtos</Text>
+                      {isProductLoading ? <ActivityIndicator size={24} color={Colors.dark1} style={{ marginTop: 20 }} /> : (
+                        <>
+                          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 15 }}>
+                            <MyTouchableOpacity text="Novo produto" onPress={() => router.replace("/app/aditional/newProduct")} />
+                          </View>
+
+                          <View style={[styles.flexRowWrapProduct, styles.marginBottom25]}>
+                            {products.map((element: any, index: any) => {
+                              const imageUrl = element.img_path !== "" ? API_URL + "/file/" + element.img_path : API_URL + "/file/default.png";
+
+                              return (
+                                <View key={index} style={[styles.productItemComponent, index % 2 === 0 && styles.evenItem]}>
+                                  <View style={styles.viewImage}>
+                                    <Image source={{ uri: imageUrl }} style={styles.product_image} resizeMode='cover' />
+
+                                    <View style={styles.PriceNum}>
+                                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                                        <Text style={{ fontWeight: 'bold' }}>Kz {element.price}</Text>
+                                      </View>
+                                    </View>
+                                  </View>
+                                  <View style={styles.productTitle}>
+                                    <Text style={styles.productname}>{element.name}</Text>
+                                    <Text style={styles.productDesc}>{element.description}</Text>
+
+                                    <DangerButton title="Eliminar Produto" onPress={() => handleDelete(element.id)} />
+                                  </View>
+                                </View>
+                              );
+                            })}
+                          </View>
+                        </>
+                      )}
                     </View>}
 
                     {/* Componentes do tab que criei - Two */}
                     {activeTab.tabTwo && <View style={{ paddingVertical: 10 }}>
-                        <Text style={{ fontWeight: "bold" }}>Reservas</Text>
+                      <Text style={{ fontWeight: "bold" }}>Reservas</Text>
                     </View>}
                   </View>
                 ) : (
