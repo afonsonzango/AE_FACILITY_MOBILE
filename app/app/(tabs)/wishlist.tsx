@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, View, Image, TouchableOpacity, Alert, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, Text, View, Image, TouchableOpacity, Alert, ActivityIndicator, StyleSheet, Dimensions, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UpperNavbar from '@/components/UpperNavbar';
 import { Colors } from '@/constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@/services/axiosConfig';
-import { deleteWishlistItem, getWishlist } from '@/components/addToWishList';
-import { useFocusEffect } from 'expo-router';
+import { deleteWishlistItem, getWishlist, sendReservationRequest } from '@/components/addToWishList';
+import { router, useFocusEffect } from 'expo-router';
+import MyTouchableOpacity from '@/components/MyTouchableOpacity';
+import axios from 'axios';
 
 const WishlistScreen = () => {
   const [wishlist, setWishlist] = useState<any[]>([]);
@@ -49,6 +51,44 @@ const WishlistScreen = () => {
     }
   };
 
+  const [warehouseId, setWarehouseId] = useState<any>(null);
+
+  const checkTokenAndNavigate = async () => {
+    const userToken = await AsyncStorage.getItem('token');
+
+    try {
+      const userStatus = await axios.post(
+        `${API_URL}/user`,
+        {},
+        {
+          headers: {
+            token: userToken
+          },
+        }
+      );
+
+      setWarehouseId(userStatus.data.user.warehouse.id);
+    } catch (error) {
+      router.replace('/auth/login');
+      console.log(error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkTokenAndNavigate();
+    }, [])
+  );
+
+  const [quantities, setQuantities] = useState<{ [key: number]: string }>({});
+
+  const updateQuantity = (productId: number, quantity: string) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [productId]: quantity,
+    }));
+  };
+
   return (
     <SafeAreaView>
       <UpperNavbar />
@@ -71,6 +111,25 @@ const WishlistScreen = () => {
                 <View style={styles.productTitle}>
                   <Text style={styles.productname}>{item.product.name}</Text>
                   <Text style={styles.productDesc}>{item.product.description}</Text>
+                  <View>
+                    <TextInput
+                      placeholder='Quantidade'
+                      value={quantities[item.id] || ''}
+                      onChangeText={(text) => updateQuantity(item.product.id, text)}
+                    />
+                  </View>
+                  <MyTouchableOpacity text='Pedir reserva'
+                    onPress={() =>
+                      sendReservationRequest(
+                        item.product.id,
+                        parseInt(quantities[item.product.id]) || 1,
+                        Number(userId),
+                        warehouseId
+                      ).then(() => {
+                        Alert.alert('Sucesso', 'Produto reservado com sucesso.');
+                      })
+                    }
+                  />
                   <TouchableOpacity style={styles.buttonDelete} onPress={() => handleDelete(item.id)}>
                     <Text style={styles.buttonText}>Remover</Text>
                   </TouchableOpacity>

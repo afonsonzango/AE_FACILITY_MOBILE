@@ -225,10 +225,9 @@ const WarehouseScreen = () => {
     setLoading(true);
 
     try {
-      const response: any = await axios.get(`${API_URL}/reservation/warehouse/${warehouse.id}`);
-      
+      const response = await axios.get(`${API_URL}/reservation/warehouse/${warehouse.id}`);
+
       console.log("response-----------------------------------------");
-      console.log(response.data.data);
       setReservations(response.data.data);
     } catch (error) {
       console.log(error);
