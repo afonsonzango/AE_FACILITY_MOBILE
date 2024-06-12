@@ -1,13 +1,14 @@
 import { Image, StyleSheet, Text, View } from "react-native"
 import { TabBarIcon } from "./navigation/TabBarIcon"
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 const UpperNavbar = () => {
     return (
       <SafeAreaView>
         <View style={styles.NavbarTop}>
             <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
-            <TabBarIcon name={'bag-outline'} color={"#000"} />
+            <TabBarIcon name={'bag-outline'} color={"#000"} onPress={() => router.replace('/app/aditional/usersReservations')} />
         </View>
       </SafeAreaView>
     )

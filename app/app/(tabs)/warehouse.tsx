@@ -194,11 +194,11 @@ const WarehouseScreen = () => {
           },
         }
       );
-      
+
       const warehouseId = response.data.user.warehouse.id;
-      
+
       const productsResponse = await axios.get(`${API_URL}/product/warehouse/all/${warehouseId}`);
-      
+
       setLoadedProducts(productsResponse.data.data);
     } catch (error) {
       console.log(error);
@@ -212,6 +212,64 @@ const WarehouseScreen = () => {
       execProductList();
     }, [])
   );
+
+
+
+
+
+  // -----------------------------------------
+  const [loading, setLoading] = useState(false);
+  const [reservations, setReservations] = useState<any>([]);
+
+  const getReservations = async () => {
+    setLoading(true);
+
+    try {
+      const response: any = await axios.get(`${API_URL}/reservation/warehouse/${warehouse.id}`);
+      
+      console.log("response-----------------------------------------");
+      console.log(response.data.data);
+      setReservations(response.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getReservations();
+    }, [])
+  )
+
+  const handleAcceptReservation = async (reservationId: number) => {
+    try {
+      await axios.post(`${API_URL}/reservation/accept`, {
+        reservationId: reservationId
+      });
+      Alert.alert('Sucesso', 'Reserva aceita com sucesso.');
+      router.replace('/app/warehouse');
+    } catch (error) {
+      console.error('Erro ao aceitar a reserva:', error);
+      Alert.alert('Erro', 'Não foi possível aceitar a reserva.');
+    }
+  };
+
+  const handleCancelReservation = async (reservationId: number) => {
+    try {
+      await axios.delete(`${API_URL}/reservation/cancel`, {
+        data: {
+          reservationId: reservationId
+        }
+      });
+      Alert.alert('Sucesso', 'Reserva cancelada com sucesso.');
+      router.replace('/app/warehouse');
+    } catch (error) {
+      console.error('Erro ao cancelar a reserva:', error);
+      Alert.alert('Erro', 'Não foi possível cancelar a reserva.');
+    }
+  };
 
   return (
     <View>
@@ -302,6 +360,31 @@ const WarehouseScreen = () => {
                     {/* Componentes do tab que criei - Two */}
                     {activeTab.tabTwo && <View style={{ paddingVertical: 10 }}>
                       <Text style={{ fontWeight: "bold" }}>Reservas</Text>
+
+                      {loading ? (
+                        <ActivityIndicator size={24} color="#000" style={{ marginTop: 20 }} />
+                      ) : reservations.length === 0 ? (
+                        <Text style={stylesp.emptyText}>Nenhuma reserva encontrada.</Text>
+                      ) : (
+                        reservations.map((reservation: any, index: any) => (
+                          <View key={index} style={stylesp.reservationItem}>
+                            <Text>Reserva ID: {reservation.id}</Text>
+                            <Text>Quantidade: {reservation.quantity}</Text>
+                            <Text>Status: {reservation.accepted ? 'Aceita' : 'Pendente'}</Text>
+                            {/* <Text>Cliente: {reservation.user.name}</Text> */}
+                            {/* <Text>Email: {reservation.user.email}</Text> */}
+                            {/* <Text>Telefone: {reservation.user.phone_number}</Text> */}
+                            <View style={stylesp.buttonContainer}>
+                              <TouchableOpacity style={stylesp.acceptButton} onPress={() => handleAcceptReservation(reservation.id)}>
+                                <Text style={stylesp.buttonText}>Aceitar</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity style={stylesp.cancelButton} onPress={() => handleCancelReservation(reservation.id)}>
+                                <Text style={stylesp.buttonText}>Cancelar</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ))
+                      )}
                     </View>}
                   </View>
                 ) : (
@@ -359,5 +442,35 @@ const stylesp = StyleSheet.create({
     padding: 6,
     margin: 0,
     borderRadius: 10,
-  }
+  },
+  emptyText: {
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  reservationItem: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  acceptButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+  },
+  cancelButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+  },
 })

@@ -36,3 +36,25 @@ export const deleteWishlistItem = async (productId: number) => {
         throw error;
     }
 };
+
+export const sendReservationRequest = async (
+    productId: number,
+    quantity: number,
+    userId: number,
+    warehouseId: number
+) => {
+    try {
+        const response = await axios.post(`${API_URL}/reservation/create`, {
+            productId,
+            quantity,
+            userId,
+            warehouseId
+        });
+
+        Alert.alert('Sucesso', `Reserva de ${quantity} unidades foi bem-sucedida.`);
+        return response.data;
+    } catch (error) {
+        Alert.alert('Erro', 'Não foi possível realizar a reserva.');
+        throw error;
+    }
+};

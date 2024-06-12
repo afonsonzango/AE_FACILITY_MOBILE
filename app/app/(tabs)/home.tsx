@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import UpperNavbar from '@/components/UpperNavbar';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
-import { StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { API_URL } from '@/services/axiosConfig';
@@ -10,13 +10,22 @@ import axios from 'axios';
 import { ActivityIndicator, Title } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addToWishlist } from '@/components/addToWishList';
+import { addToWishlist, sendReservationRequest } from '@/components/addToWishList';
 
 function HomeScreen() {
   const [catLoading, setCatLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [warehouseId, setWarehouseId] = useState(null);
+  const [warehouseId, setWarehouseId] = useState<any>(null);
   const [userId, setUserId] = useState<any>();
+
+  const [quantities, setQuantities] = useState<{ [key: number]: string }>({});
+
+  const updateQuantity = (productId: number, quantity: string) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [productId]: quantity,
+    }));
+  };
 
   const fetchCategories = async () => {
     setCatLoading(true);
@@ -117,8 +126,8 @@ function HomeScreen() {
           )}
 
           {loadedProducts.length === 0 && !isProductLoading && <View style={{ marginTop: 20 }}>
-            <Title>Sem produtos!</Title>  
-            <Text>Nenhum produto encontrado, tente novamente mais tarde.</Text>  
+            <Title>Sem produtos!</Title>
+            <Text>Nenhum produto encontrado, tente novamente mais tarde.</Text>
           </View>}
 
           {isProductLoading ? <ActivityIndicator size={24} color={Colors.dark1} style={{ marginTop: 20 }} /> : (
@@ -141,7 +150,7 @@ function HomeScreen() {
                             <TabBarIcon name={'heart'} color={"#999"} size={30} />
                           </View>
                         </TouchableOpacity>
-                        
+
                         <View style={styles.PriceNum}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                             <Text>Kz {element.price}</Text>
@@ -156,7 +165,27 @@ function HomeScreen() {
                         <Text style={styles.productname}>{element.name}</Text>
                         <Text style={styles.productDesc}>{element.description}</Text>
 
-                        <TouchableOpacity style={styles.buttonReserve}>
+                        <View>
+                          <TextInput
+                            placeholder='Quantidade'
+                            value={quantities[element.id] || ''}
+                            onChangeText={(text) => updateQuantity(element.id, text)}
+                          />
+                        </View>
+
+                        <TouchableOpacity
+                          style={styles.buttonReserve}
+                          onPress={() =>
+                            sendReservationRequest(
+                              element.id,
+                              parseInt(quantities[element.id]) || 1,
+                              userId,
+                              warehouseId
+                            ).then(() => {
+                              Alert.alert('Sucesso', 'Produto reservado com sucesso.');
+                            })
+                          }
+                        >
                           <Text style={styles.buttonText}>Reservar</Text>
                         </TouchableOpacity>
                       </View>
