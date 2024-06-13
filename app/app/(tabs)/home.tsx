@@ -61,11 +61,16 @@ function HomeScreen() {
         }
       );
 
-      setWarehouseId(userStatus.data.user.warehouse.id);
+      if(userStatus.data.user.warehouse) {
+        setWarehouseId(userStatus.data.user.warehouse.id);
+      }else{
+        setWarehouseId(0);
+      }
     } catch (error) {
       router.replace('/auth/login');
-      console.log(error);
+      console.log("Auth error: ", error);
     }
+    
   };
 
   useFocusEffect(
@@ -114,9 +119,9 @@ function HomeScreen() {
                   <Text style={styles.categoryText}>Todas</Text>
                 </View>
 
-                {categories.map((category: any) => (
+                {categories.map((category: any, index) => (
                   <TouchableOpacity>
-                    <View style={styles.categoryItem}>
+                    <View key={index} style={styles.categoryItem}>
                       <Text style={styles.categoryText}>{category.name}</Text>
                     </View>
                   </TouchableOpacity>

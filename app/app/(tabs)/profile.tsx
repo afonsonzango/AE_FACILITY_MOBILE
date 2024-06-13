@@ -11,6 +11,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { Colors } from "@/constants/Colors";
 import { styles as container } from "./home";
+import { deleteUser } from "@/components/addToWishList";
 
 const imageUrl = "https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc"
 
@@ -235,6 +236,13 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    deleteUser(Number(userId));
+
+    router.replace("/auth/login")
+  }
+
   return (
     <SafeAreaView>
       <UpperNavbar />
@@ -376,13 +384,17 @@ const Profile = () => {
 
               </View>
 
-              <View style={{ marginTop: 30 }}>
+              <View style={{ marginTop: 30, marginBottom: 30 }}>
                 <View style={{ marginTop: 20, marginBottom: 18 }}>
                   <Text style={styles.titleInterger}>Minha Sessao</Text>
                 </View>
 
-                <TouchableOpacity style={styles.dangerButton} onPress={handleLogOut}>
+                <TouchableOpacity style={[styles.dangerButton, {marginBottom: 10}]} onPress={handleLogOut}>
                   <Text style={styles.buttonTextIng}>Terminar sessao</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.dangerButton} onPress={handleDeleteAccount}>
+                  <Text style={styles.buttonTextIng}>Apagar conta</Text>
                 </TouchableOpacity>
               </View>
             </View>

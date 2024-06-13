@@ -12,6 +12,7 @@ import { Colors } from "@/constants/Colors";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import MyTouchableOpacity from "@/components/MyTouchableOpacity";
 import DangerButton from "@/components/DangerButton";
+import { deleteWarehouse } from "@/components/addToWishList";
 
 const WarehouseScreen = () => {
 
@@ -239,7 +240,7 @@ const WarehouseScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       getReservations();
-    }, [])
+    }, [warehouse.id])
   )
 
   const handleAcceptReservation = async (reservationId: number) => {
@@ -270,6 +271,13 @@ const WarehouseScreen = () => {
     }
   };
 
+  const handleDeleteWarehouse = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+
+    deleteWarehouse(Number(warehouse.id), Number(userId));
+    router.replace('/app/warehouse');
+  };
+
   return (
     <View>
       <SafeAreaView>
@@ -280,16 +288,15 @@ const WarehouseScreen = () => {
               <>
                 {hashWarehouse ? (
                   <View>
-                    <View><Title style={{ fontWeight: "bold" }}>{warehouse.name}</Title></View>
+                    <View><Title style={{  }}>{warehouse.name}</Title></View>
                     <View style={{ flexDirection: "row", marginBottom: 10, gap: 8, alignItems: "center" }}>
-                      <View style={{ flexDirection: "row" }}><Text style={{ fontWeight: 700, padding: 5, paddingHorizontal: 15, backgroundColor: Colors.primaryLight, borderWidth: 1, borderColor: Colors.dark1, borderRadius: 15 }}>{warehouse.category.name}</Text></View>
-                      <View style={{ flexDirection: "row" }}><Text style={{ fontWeight: 700, padding: 5, paddingHorizontal: 15, backgroundColor: "#f0f0f0", borderWidth: 1, borderColor: "#ddd", borderRadius: 15 }}>{warehouse.description}</Text></View>
+                      <View style={{ flexDirection: "row" }}><Text style={{ padding: 5, paddingHorizontal: 15, backgroundColor: Colors.primaryLight, borderWidth: 1, borderColor: Colors.dark1, borderRadius: 15 }}>{warehouse.category.name}</Text></View>
+                      <View style={{ flexDirection: "row" }}><Text style={{ padding: 5, paddingHorizontal: 15, backgroundColor: "#f0f0f0", borderWidth: 1, borderColor: "#ddd", borderRadius: 15 }}>{warehouse.description}</Text></View>
                     </View>
                     <View style={{ flexDirection: "row", gap: 10 }}>
                       <Text
                         onPress={() => router.replace("/app/aditional/editWarehouse")}
                         style={{
-                          fontWeight: 700,
                           padding: 5,
                           paddingHorizontal: 15,
                           backgroundColor: "#f0f0f0",
@@ -300,23 +307,24 @@ const WarehouseScreen = () => {
                         Configuracoes
                       </Text>
 
-                      <Text
-                        style={{
-                          fontWeight: 700,
-                          padding: 5,
-                          paddingHorizontal: 15,
-                          backgroundColor: "#f0f0f0",
-                          borderWidth: 1,
-                          borderColor: "#ddd",
-                          borderRadius: 15
-                        }}>
-                        Eliminar Armazem
-                      </Text>
+                      <TouchableOpacity onPress={handleDeleteWarehouse}>
+                        <Text
+                          style={{
+                            padding: 5,
+                            paddingHorizontal: 15,
+                            backgroundColor: "#f0f0f0",
+                            borderWidth: 1,
+                            borderColor: "#ddd",
+                            borderRadius: 15
+                          }}>
+                          Eliminar Armazem
+                        </Text>
+                      </TouchableOpacity>
                     </View>
 
                     <View style={{ paddingVertical: 10, marginTop: 50, flexDirection: "row", width: "100%", justifyContent: "space-around", borderBottomColor: "#f0f0f0", borderBottomWidth: 1 }}>
-                      <TouchableOpacity style={{ backgroundColor: activeTab.tabOne ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: true, tabTwo: false })}><PaperText style={{ color: activeTab.tabOne ? "#fff" : "#000", fontWeight: "bold" }}>Productos</PaperText></TouchableOpacity>
-                      <TouchableOpacity style={{ backgroundColor: activeTab.tabTwo ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: false, tabTwo: true })}><PaperText style={{ color: activeTab.tabTwo ? "#fff" : "#000", fontWeight: "bold" }}>Reservas</PaperText></TouchableOpacity>
+                      <TouchableOpacity style={{ backgroundColor: activeTab.tabOne ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: true, tabTwo: false })}><PaperText style={{ color: activeTab.tabOne ? "#fff" : "#000",  }}>Productos</PaperText></TouchableOpacity>
+                      <TouchableOpacity style={{ backgroundColor: activeTab.tabTwo ? Colors.primary : "#f0f0f0", padding: 10, paddingHorizontal: 50, borderRadius: 10 }} onPress={() => setActiveTab({ tabOne: false, tabTwo: true })}><PaperText style={{ color: activeTab.tabTwo ? "#fff" : "#000",  }}>Reservas</PaperText></TouchableOpacity>
                     </View>
 
                     {/* Componentes do tab que criei - One */}
@@ -338,7 +346,7 @@ const WarehouseScreen = () => {
 
                                     <View style={styles.PriceNum}>
                                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                                        <Text style={{ fontWeight: 'bold' }}>Kz {element.price}</Text>
+                                        <Text style={{  }}>Kz {element.price}</Text>
                                       </View>
                                     </View>
                                   </View>
@@ -358,7 +366,7 @@ const WarehouseScreen = () => {
 
                     {/* Componentes do tab que criei - Two */}
                     {activeTab.tabTwo && <View style={{ paddingVertical: 10 }}>
-                      <Text style={{ fontWeight: "bold" }}>Reservas</Text>
+                      <Text style={{  }}>Reservas</Text>
 
                       {loading ? (
                         <ActivityIndicator size={24} color="#000" style={{ marginTop: 20 }} />
@@ -433,7 +441,7 @@ const stylesp = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     paddingHorizontal: 50,
-    fontWeight: 500
+    // fontWeight: 500
   },
   button: {
     marginTop: 15,
