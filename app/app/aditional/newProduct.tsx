@@ -15,7 +15,6 @@ const NewProduct = () => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState<number>(0);
     const [file, setFile] = useState<any>(null);
-    const [error, setError] = useState<any>(null);
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -32,10 +31,7 @@ const NewProduct = () => {
 
             if (!result.cancelled && result.assets && result.assets.length > 0 && result.assets[0].uri) {
                 setFile(result.assets[0]);
-                setError(null);
-            } else {
-                setError('Error selecting image');
-            }
+            } 
         }
     };
 

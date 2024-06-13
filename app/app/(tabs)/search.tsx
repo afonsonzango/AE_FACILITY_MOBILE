@@ -38,7 +38,7 @@ const SearchScreen = () => {
           },
         }
       );
-    } catch (error) {
+    } catch {
       router.replace('/auth/login');
     }
   };
@@ -94,7 +94,7 @@ const SearchScreen = () => {
         text: inputText,
         userId,
       });
-    } catch (error) {
+    } catch {
       Alert.alert('Por favor, digite algo para pesquisar');
     } finally {
       setSLoading(false);
@@ -109,7 +109,7 @@ const SearchScreen = () => {
       const historyResponse = await axios.get(`${API_URL}/search/user/history/${userId}`);
 
       setHistoryResults(historyResponse.data.data);
-    } catch (error) {
+    } catch {
       Alert.alert('Ocorreu um erro buscando o historico de busca');
     } finally {
       setHLoading(false);

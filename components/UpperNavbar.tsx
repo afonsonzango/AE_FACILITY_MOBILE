@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native"
+import { Image, StyleSheet, View } from "react-native"
 import { TabBarIcon } from "./navigation/TabBarIcon"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";

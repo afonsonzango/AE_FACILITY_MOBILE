@@ -132,7 +132,7 @@ const EditWarehouse = () => {
                         <Text style={styles.title}>Registrar Armazem</Text>
                         <Text style={styles.description}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse explicabo iusto impedit temporibus ut ratione nisi reiciendis voluptate atque assumenda. Tenetur molestiae fugit eos esse iusto harum nihil, quam numquam.</Text>
 
-                        {error != "" ? <Text style={styles.AlertComponent}>
+                        {error !== "" ? <Text style={styles.AlertComponent}>
                             {error}
                         </Text> : ""}
 
@@ -176,7 +176,7 @@ const EditWarehouse = () => {
                         </View>
 
                         <MyTouchableOpacity
-                            text={`Actualizar armazem ${(warehouse.name != "" ? "\"" + warehouse.name + "\"" : "")}`}
+                            text={`Actualizar armazem ${(warehouse.name !== "" ? "\"" + warehouse.name + "\"" : "")}`}
                             style={{ alignItems: "center", marginTop: 20 }}
                             onPress={handleNewWarehouse}
                             loading={loading}

@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { API_URL } from "@/services/axiosConfig";
 import axios from "axios";
-import { router, useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Button, TextInput } from "react-native-paper";

@@ -1,6 +1,6 @@
 import axios from "axios"
 import UpperNavbar from "@/components/UpperNavbar"
-import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";

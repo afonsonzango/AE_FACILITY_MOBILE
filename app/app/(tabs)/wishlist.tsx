@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, Text, View, Image, TouchableOpacity, Alert, ActivityIndicator, StyleSheet, Dimensions, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UpperNavbar from '@/components/UpperNavbar';
@@ -21,7 +21,7 @@ const WishlistScreen = () => {
       const data = await getWishlist(userId);
       console.log('Wishlist data:', data); // Log para verificar a estrutura dos dados
       setWishlist(Array.isArray(data) ? data : []); // Garantir que seja uma matriz
-    } catch (error) {
+    } catch {
       Alert.alert('Erro', 'Não foi possível buscar a lista de desejos');
     } finally {
       setLoading(false);
@@ -46,7 +46,7 @@ const WishlistScreen = () => {
       await deleteWishlistItem(productId);
       setWishlist((prevWishlist) => prevWishlist.filter(item => item.id !== productId));
       Alert.alert('Sucesso', 'Produto removido da lista de desejos');
-    } catch (error) {
+    } catch {
       Alert.alert('Erro', 'Não foi possível remover o produto da lista de desejos');
     }
   };
@@ -149,10 +149,6 @@ const deviceHeight = Dimensions.get('window').height;
 const desiredHeight = deviceHeight - 90;
 
 export const VIEW_PADDING = 10;
-
-const { width } = Dimensions.get("window");
-const categoryComponentWidth: number = (width - VIEW_PADDING * 2) / 2
-
 
 const styles = StyleSheet.create({
   container: {

@@ -18,7 +18,7 @@ const pickerStyles = StyleSheet.create({
     },
 });
 
-const newWarehouse = () => {
+const NewWarehouse = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const [warehouse, setWarehouse] = useState({
@@ -94,7 +94,7 @@ const newWarehouse = () => {
                         <Text style={styles.title}>Registrar Armazem</Text>
                         <Text style={styles.description}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse explicabo iusto impedit temporibus ut ratione nisi reiciendis voluptate atque assumenda. Tenetur molestiae fugit eos esse iusto harum nihil, quam numquam.</Text>
 
-                        {error != "" ? <Text style={styles.AlertComponent}>
+                        {error !== "" ? <Text style={styles.AlertComponent}>
                             {error}
                         </Text> : ""}
 
@@ -136,7 +136,7 @@ const newWarehouse = () => {
                         </View>
 
                         <MyTouchableOpacity
-                            text={`Criar armazem ${(warehouse.name != "" ? "\"" + warehouse.name + "\"" : "")}`}
+                            text={`Criar armazem ${(warehouse.name !== "" ? "\"" + warehouse.name + "\"" : "")}`}
                             style={{ alignItems: "center", marginTop: 20 }}
                             onPress={handleNewWarehouse}
                             loading={loading}
@@ -152,7 +152,7 @@ const newWarehouse = () => {
     );
 }
 
-export default newWarehouse;
+export default NewWarehouse;
 
 const styles = StyleSheet.create({
     SafeAreaViewFlex: {

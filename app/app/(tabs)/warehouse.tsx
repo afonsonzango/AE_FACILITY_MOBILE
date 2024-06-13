@@ -1,5 +1,5 @@
 import UpperNavbar from "@/components/UpperNavbar";
-import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./home";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,7 +9,6 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Button, Title, Text as PaperText } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import MyTouchableOpacity from "@/components/MyTouchableOpacity";
 import DangerButton from "@/components/DangerButton";
 import { deleteWarehouse } from "@/components/addToWishList";
@@ -166,9 +165,6 @@ const WarehouseScreen = () => {
   );
 
 
-  // Working on the modal thing
-  const [modalVisible, setModalVisible] = React.useState(false);
-
   // Woking on separated tabs
   const [activeTab, setActiveTab] = React.useState({
     tabOne: true,
@@ -178,7 +174,7 @@ const WarehouseScreen = () => {
   // Showing products in list or grid
   // Loading products
   const [isProductLoading, setIsProductLoading] = useState<boolean>();
-  const [loadedProducts, setLoadedProducts] = useState([]);
+  // const [loadedProducts, setLoadedProducts] = useState([]);
 
   const execProductList = async () => {
     setIsProductLoading(true);
@@ -198,9 +194,9 @@ const WarehouseScreen = () => {
 
       const warehouseId = response.data.user.warehouse.id;
 
-      const productsResponse = await axios.get(`${API_URL}/product/warehouse/all/${warehouseId}`);
+      await axios.get(`${API_URL}/product/warehouse/all/${warehouseId}`);
 
-      setLoadedProducts(productsResponse.data.data);
+      // setLoadedProducts(productsResponse.data.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -222,7 +218,7 @@ const WarehouseScreen = () => {
   const [loading, setLoading] = useState(false);
   const [reservations, setReservations] = useState<any>([]);
 
-  const getReservations = async () => {
+  const getReservations = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -235,12 +231,12 @@ const WarehouseScreen = () => {
     } finally {
       setLoading(false);
     }
-  }
+  }, [warehouse])
 
   useFocusEffect(
     React.useCallback(() => {
       getReservations();
-    }, [warehouse.id])
+    }, [getReservations])
   )
 
   const handleAcceptReservation = async (reservationId: number) => {

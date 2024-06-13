@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ScrollView, Text, View, ActivityIndicator, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { API_URL } from '@/services/axiosConfig';
